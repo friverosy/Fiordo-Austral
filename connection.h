@@ -64,7 +64,7 @@ public:
         mydb.setPassword("4xX3z0!!");
         mydb.setConnectOptions();*/
 
-        mydb=QSqlDatabase::addDatabase("QPSQL");
+        mydb=QSqlDatabase::addDatabase("QODBC");
         mydb.setPort(5432);
         mydb.setHostName(ip+"");
         mydb.setDatabaseName("postgres");
