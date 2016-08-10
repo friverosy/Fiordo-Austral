@@ -18,7 +18,7 @@ class connection
 
 public:
     QSqlDatabase mydb;
- bool debug;
+    bool debug;
     bool isOpenDB(){
         if(mydb.open())
             return debug= true;
@@ -34,7 +34,7 @@ public:
         {
             mydb.close();
             mydb.removeDatabase(QSqlDatabase::defaultConnection);
-             Logger::insert2Logger(rutSignin," ERROR ", "Base de datos cerrada correctamente");
+            Logger::insert2Logger(rutSignin," ERROR ", "Base de datos cerrada correctamente");
 
         }
         else
@@ -56,21 +56,16 @@ public:
         {
         }
 
-      /*  mydb=QSqlDatabase::addDatabase("QPSQL");
-        mydb.setPort(5432);
-        mydb.setHostName(ip+"");
-        mydb.setDatabaseName("oxxean");
-        mydb.setUserName("axxezo");
-        mydb.setPassword("4xX3z0!!");
-        mydb.setConnectOptions();*/
+        QString serverName = "192.168.244.132\\SQLEXPRESS";
+        QString dbName = "fiordo_austral";
+        QString dbID = "admin";
+        QString dbPW = "Axxezo2016";
 
-        mydb=QSqlDatabase::addDatabase("QODBC");
-        mydb.setPort(5432);
-        mydb.setHostName(ip+"");
-        mydb.setDatabaseName("postgres");
-        mydb.setUserName("postgres");
-        mydb.setPassword("admin");
-        mydb.setConnectOptions();
+        mydb = QSqlDatabase::addDatabase("QODBC");
+        QString dsn = QString("DRIVER={SQL Server};SERVER=%1;DATABASE=%2;UID=%3;PWD=%4;").arg(serverName).arg(dbName).arg(dbID).arg(dbPW);
+
+        mydb.setDatabaseName(dsn);
+        mydb.setPort(1433);
 
         if(mydb.open()){
             qDebug() <<"Conexion al Servidor Realizada Exitosamente";
@@ -107,7 +102,7 @@ public:
             }
         }
         else
-           return false;
+            return false;
     }
 
     static QString getFirstFromDb(const QString rut_user, const QString query)
@@ -125,7 +120,7 @@ public:
             }
             else
             {
-//                Logger::insert2Logger(rut_user," EMPTY ", qry->executedQuery());
+                //                Logger::insert2Logger(rut_user," EMPTY ", qry->executedQuery());
                 return "";
             }
         }
