@@ -37,6 +37,16 @@ private slots:
     void on_acceptButton_formcs_clicked();
 
 
+    void on_lineEdit_rut_textChanged(const QString &arg1);
+
+    void on_lineEdit_name_textChanged(const QString &arg1);
+
+    void on_lineEdit_appPat_textChanged(const QString &arg1);
+
+    void on_lineEdit_appMat_textChanged(const QString &arg1);
+
+    void clean();
+
 private:
     Ui::formcs *ui;
     enum people

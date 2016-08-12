@@ -33,6 +33,8 @@
 
 PassportReader pr1;  /* Object for the PR system */
 QSerialPort *RTScan1; /* Object for the RTscan */
+QTime currentTime = QTime::currentTime();
+QDate currentDate = QDate::currentDate();
 connection conn1;
 Lib lib1;
 
@@ -80,7 +82,7 @@ formcs::formcs(QWidget *parent) :
     ui->lineEdit_position->setEnabled(false);
     ui->comboBox_profile->setEnabled(false);
 
-  /*  switch (conn2.getFirstFromDb(rutSignin,"select id_rol from users where rut='"+rutSignin+"'").toInt()) {
+    /*  switch (conn2.getFirstFromDb(rutSignin,"select id_rol from users where rut='"+rutSignin+"'").toInt()) {
     case 2: //Authorizer
         ui->button_manualRegistration->setEnabled(false);
         break;
@@ -129,6 +131,7 @@ formcs::~formcs()
 
 void formcs::on_CancelButton_formcs_clicked()
 {
+    clean();
     pr1.CloseDevice();
     formcs::close();
 }
@@ -289,7 +292,7 @@ void formcs::enrollPeople(QString device){
             ui->lineEdit_name->setText(global_GIVENNAME1);
             ui->lineEdit_appMat->setText(global_MATERNAL_SURNAME1);
             ui->lineEdit_appPat->setText(global_PATERNAL_SURNAME1);
-            if(conn.getFirstFromDb(rutSignin, "select take_picture from configuration where key=(select key from users where rut = '"+rutSignin+"')") == "true")
+            if(conn.getFirstFromDb(rutSignin, "select take_picture from configuration where keys=(select keys from users where rut = '"+rutSignin+"')") == "true")
             {
                 int ret = QMessageBox::warning(this, tr("Advertencia"),
                                                tr("Persona sin foto, si desea obtener gire cedula al anverso y presione ok."),
@@ -547,19 +550,16 @@ void formcs::on_acceptButton_formcs_clicked()
     qDebug()<<"current text "+ui->comboBox_profile->currentText();
     if(!company.isEmpty()&&!position.isEmpty()&&!profile.isEmpty()&&rut==false&&!ui->lineEdit_appMat->text().isEmpty()
             &&!ui->lineEdit_appPat->text().isEmpty()&&!ui->lineEdit_appMat->text().isEmpty()){
-        conn1.insert2Db(rutSignin,"insert into people (rut,names,paternal_surname,maternal_surname,birthdate,state,code_nationality,picture,id_position,id_profile,rut_company) values ('"+ui->lineEdit_rut->text().toUpper()+"','"+ui->lineEdit_name->text().toUpper()+"','"+ui->lineEdit_appPat->text().toUpper()+"','"+ui->lineEdit_appMat->text().toUpper()+"','"+global_BIRTH_DATE1+"','I','"+global_CODE_NATIONALITY1+"','"+imgPath+"','"+position+"','"+profile+"','"+company+"')");
+        QString frequency="2";
+        conn1.insert2Db(rutSignin,"insert into people (rut,names,paternal_surname,maternal_surname,birthdate,state,code_nationality,picture,id_position,id_profile,rut_company,id_frequency) values ('"+ui->lineEdit_rut->text().toUpper()+"','"+ui->lineEdit_name->text().toUpper()+"','"+ui->lineEdit_appPat->text().toUpper()+"','"+ui->lineEdit_appMat->text().toUpper()+"','"+global_BIRTH_DATE1+"','I','"+global_CODE_NATIONALITY1+"','"+imgPath+"','"+position+"','"+profile+"','"+company+"','"+frequency+"')");
+        if(ui->button_manualRegistration->isEnabled())
+            query->exec("insert into record (datetime_input,rut_people,rut_user,type,state) values ('"+currentDate.toString("yyyy-MM-dd")+" "+currentTime.toString("HH:mm")+"', '"+ui->lineEdit_rut->text()+"','"+rutSignin+"','M','"+'E'+"')");
+        else
+            query->exec("insert into record (datetime_input,rut_people,rut_user,type,state) values ('"+currentDate.toString("yyyy-MM-dd")+" "+currentTime.toString("HH:mm")+"', '"+ui->lineEdit_rut->text()+"','"+rutSignin+"','A','"+'E'+"')");
         QMessageBox::information(this,tr("Enhorabuena"),"El  usuario: "+ui->lineEdit_rut->text()+" ha sido ingresado satisfactoriamente");
         pr1.CloseDevice();
         imgPath="";
-        QPixmap blueIconUser(":images/User-blue-icon.png");
-        ui->formcs_labelImage->setPixmap(blueIconUser);
-        ui->lineEdit_rut->setText("");
-        ui->lineEdit_name->setText("");
-        ui->lineEdit_Enterprise->setText("");
-        ui->lineEdit_appMat->setText("");
-        ui->lineEdit_appPat->setText("");
-        ui->lineEdit_position->setText("");
-        ui->comboBox_profile->setCurrentIndex(-1);
+       clean();
         company="";
         profile="";
         position="";
@@ -572,4 +572,41 @@ void formcs::on_acceptButton_formcs_clicked()
         if(ui->lineEdit_Enterprise->text().isEmpty()||ui->lineEdit_position->text().isEmpty()||ui->comboBox_profile->currentText().isEmpty()||ui->lineEdit_rut->text().isEmpty()||ui->lineEdit_appMat->text().isEmpty()||
                 ui->lineEdit_appPat->text().isEmpty()||ui->lineEdit_name->text().isEmpty())
             QMessageBox::critical(this,tr("PRECAUCION"),tr("Verifique que todo los campos esten completos y luego presione aceptar nuevamente"));
+}
+
+void formcs::on_lineEdit_rut_textChanged(const QString &arg1)
+{
+    arg1.toUpper();
+    ui->lineEdit_rut->setText(ui->lineEdit_rut->text().toUpper());
+}
+
+void formcs::on_lineEdit_name_textChanged(const QString &arg1)
+{
+    ui->lineEdit_name->setText(ui->lineEdit_name->text().toUpper());
+}
+
+void formcs::on_lineEdit_appPat_textChanged(const QString &arg1)
+{
+    ui->lineEdit_appPat->setText(ui->lineEdit_appPat->text().toUpper());
+}
+
+void formcs::on_lineEdit_appMat_textChanged(const QString &arg1)
+{
+    ui->lineEdit_appMat->setText(ui->lineEdit_appMat->text().toUpper());
+}
+void formcs::clean(){
+    //clear all
+    QPixmap blueIconUser(":images/User-blue-icon.png");
+    ui->formcs_labelImage->setPixmap(blueIconUser);
+    ui->lineEdit_rut->setText("");
+    ui->lineEdit_name->setText("");
+    ui->lineEdit_Enterprise->setText("");
+    ui->lineEdit_appMat->setText("");
+    ui->lineEdit_appPat->setText("");
+    ui->lineEdit_position->setText("");
+    ui->comboBox_profile->setCurrentIndex(-1);
+    PERSONAL_DATA="";
+    GIVENNAME="";
+    MATERNAL_SUR="";
+    PATERNAL_SUR="";
 }

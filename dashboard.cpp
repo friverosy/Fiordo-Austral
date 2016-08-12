@@ -197,7 +197,7 @@ Dashboard::Dashboard(QWidget *parent) :
 
     //RTScan
     RTScan = new QSerialPort(this);
-    RTScan->setPortName(conn.getFirstFromDb(rutSignin,"select rtscan_port from configuration where key=(select key from users where rut = '"+rutSignin+"')"));
+    RTScan->setPortName(conn.getFirstFromDb(rutSignin,"select rtscan_port from configuration where keys=(select keys from users where rut = '"+rutSignin+"')"));
     if(RTScan->open(QIODevice::ReadOnly))
     {
         RTScan->setBaudRate(QSerialPort::Baud115200);
@@ -641,7 +641,7 @@ void Dashboard::handlePeople(QString device){
             global_PICTURE=":/images/User-blue-icon.png";
             if(device=="CS")
             {
-                if(conn.getFirstFromDb(rutSignin, "select take_picture from configuration where key=(select key from users where rut = '"+rutSignin+"')") == "YES")
+                if(conn.getFirstFromDb(rutSignin, "select take_picture from configuration where keys=(select keys from users where rut = '"+rutSignin+"')") == "YES")
                 {
                     int ret = QMessageBox::warning(this, tr("Advertencia"),
                                                    tr("Persona sin foto, si desea obtener, gire cedula al anverso y presione ok."),
@@ -2016,7 +2016,7 @@ void Dashboard::on_actionDetectar_RTScan_triggered()
         //        foreach (const QSerialPortInfo &Ports, QSerialPortInfo::availablePorts())
         //            ui->comboBox_rtscan->addItem(Ports.portName());
 
-        if(RTScan->portName() == conn.getFirstFromDb(rutSignin,"select rtscan_port from configuration where key=(select key from users where rut = '"+rutSignin+"')"))
+        if(RTScan->portName() == conn.getFirstFromDb(rutSignin,"select rtscan_port from configuration where keys=(select keys from users where rut = '"+rutSignin+"')"))
         {
             /*comparar con portname que aparece en el foreach*/
             QPixmap okPix(":/images/ok.png");

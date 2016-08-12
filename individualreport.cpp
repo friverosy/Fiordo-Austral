@@ -19,7 +19,7 @@ IndividualReport::IndividualReport(QWidget *parent) :
 {
     ui->setupUi(this);
     this->setWindowTitle("Control de accesos - Exportar");
-
+	ui->lineEdit_rut->setFocus();
     ui->lineEdit->setText(QDir::homePath()+"/"+QStandardPaths::displayName(QStandardPaths::DesktopLocation)+"/Reporte_individual.xls");
     ui->calendarWidget->setMaximumDate(QDate::currentDate());
     ui->calendarWidget_2->setMaximumDate(QDate::currentDate());
@@ -224,9 +224,11 @@ void IndividualReport::on_pushButton_clicked()
                     state = "RECHAZADO POR NO CUMPLIR REQUERIMIENTOS PREVISIONALES DE SUBCONTRATISTA";
                 else if(qry->value(STATE).toString()=="RNS")
                     state = "RECHAZADO POR NO CUMPLIR REQUERIMIENTOS SEGURIDAD PARA SUBCONTRATISTA";
+				else if(qry->value(STATE).toString()=="E")
+                    state = "ENROLAMIENTO";
 
                 xlsx.write(row,2, state); //estado
-                xlsx.write(row,3, qry->value(RUT_PEOPLE).toString()); //rut
+                xlsx.write(row,3, qry->value(RUT_PEOPLE).toString().toUpper()); //rut
                 xlsx.write(row,4, qry->value(NAMES).toString()); //nombres
                 xlsx.write(row,5, qry->value(PATERNAL_SURNAME).toString()); //ap paterno
                 xlsx.write(row,6, qry->value(MATERNAL_SURNAME).toString()); //ap materno

@@ -56,7 +56,8 @@ public:
         {
         }
 
-        QString serverName = "192.168.244.132\\SQLEXPRESS";
+//        QString serverName = "192.168.244.132\\SQLEXPRESS";
+        QString serverName = ip+"\\SQLEXPRESS";
         QString dbName = "fiordo_austral";
         QString dbID = "admin";
         QString dbPW = "Axxezo2016";
