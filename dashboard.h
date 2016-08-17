@@ -14,7 +14,7 @@ extern QString PERSONAL_DATA; //rut.
 extern QString GIVENNAME;
 extern QString MATERNAL_SUR;
 extern QString PATERNAL_SUR;
-extern bool loginWindow;
+
 
 
 

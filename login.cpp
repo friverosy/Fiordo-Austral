@@ -9,13 +9,11 @@
 #include <QSplashScreen>
 #include <QTimer>
 //bool loginWindow;
-//connection conn2;
 Login::Login(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::Login)
 {
-   // conn2.connOpen();
-    loginWindow=false;
+    conn.connOpen();
     ui->setupUi(this);
     this->setWindowTitle("Login - Patagonia Wings");
     QPixmap user(":/images/User-blue-icon.png");
@@ -43,7 +41,6 @@ void Login::on_pushButton_open_clicked()
     }
     else
     {
-        connection conn;
         QSqlQuery* qry=new QSqlQuery(conn.mydb);
         if(qry->exec("select rut,password from users where rut='"+
                      ui->lineEdit_rut->text()+"' and password='"+
@@ -57,13 +54,12 @@ void Login::on_pushButton_open_clicked()
                 //User and password is correct
                 rutSignin = ui->lineEdit_rut->text();
                 Logger::insert2Logger(ui->lineEdit_rut->text()," INFO ","Sign in recorded");
-
-               this->hide();
-              //  Login log(this);
-              //  log.close();
-                //Dashboard dash(this);
-                //dash.show();
-                loginWindow=true;
+				Dashboard *dash=new Dashboard(0);
+                
+				
+				               
+				dash->show();
+                close();
                 QSplashScreen *splash=new QSplashScreen;
                 splash->setPixmap(QPixmap(":images/logo.png"));
                 splash->show();

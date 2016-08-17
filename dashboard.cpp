@@ -28,6 +28,7 @@
 #include "configuration.h"
 #include "dailyreport.h"
 #include "formcs.h"
+#include <login.h>
 
 #include <QtCore>
 #include "xlsxdocument.h"
@@ -98,18 +99,13 @@ Dashboard::Dashboard(QWidget *parent) :
 
 
 
-    conn.connOpen();
+  //conn.connOpen();
 
   if(conn.isOpenDB())
        ui->label_status_db->setPixmap(okPix);
    else
        ui->label_status_db->setPixmap(badPix);
-    Login login(this);
-    login.exec();
-    /*if(loginWindow==true){
-        login.close();
-        loginWindow=false;
-    }*/
+    
     if(rutSignin.isEmpty())
         on_actionSalir_triggered();
 
@@ -1517,8 +1513,6 @@ void Dashboard::on_actionCerrar_Sesi_n_triggered()
 {
     //this->close();
     Logger::insert2Logger(rutSignin," INFO ","Sesion closed.");
-    connection temp;
-    temp.connClose();
     qApp->quit();
     QProcess::startDetached(qApp->arguments()[0],qApp->arguments());
 }

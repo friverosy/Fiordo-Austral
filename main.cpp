@@ -5,13 +5,8 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    /*   Login log;
+    Login log;
+    Dashboard dash;
     log.show();
-  if(loginWindow==true){
-        Dashboard w(this);
-        w.show();
-   }*/
-    Dashboard w;
-    w.show();
     return a.exec();
 }

@@ -65,7 +65,7 @@ using namespace gx; //jdk
 using namespace pr; //API
 #endif
 using namespace std;
-connection conn2;
+//connection conn2;
 formcs::formcs(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::formcs)
